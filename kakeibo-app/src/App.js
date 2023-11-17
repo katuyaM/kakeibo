@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import './App.css';
+
 
 const Kakeibo = () => {
   const [kakeibo, setKakeibo] = useState([]);
@@ -58,6 +60,7 @@ const Kakeibo = () => {
       </div>
       <div>
         <label>
+          カテゴリー:
         <select value={category} onChange={(e) => setCategory(e.target.value)}>
             <option value="">選択してください</option>
             {categories.map((cat, index) => (
@@ -92,3 +95,4 @@ const Kakeibo = () => {
 };
 
 export default Kakeibo;
+
