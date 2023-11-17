@@ -19,6 +19,8 @@ app.post('/submit', (req, res) => {
   res.send(`登録が完了しました。<br>金額: ${amount}<br>カテゴリ: ${category}<br>日付: ${date}`);
 });
 
+
+
 app.listen(port, () => {
   console.log(`App listening at http://localhost:${port}`);
 });
