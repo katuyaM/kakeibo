@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './App.css';
 
 const Kakeibo = () => {
   const [kakeibo, setKakeibo] = useState([]);
@@ -7,10 +6,11 @@ const Kakeibo = () => {
   const [category, setCategory] = useState('');
   const [date, setDate] = useState('');
 
+  const categories = ['食費','交通費','娯楽','その他'];
 
-  const handleAddKakeibo = () => {
+  const handleAddKakeibo = async () => {
     if (!amount || !category || !date) {
-      alert('追加しました');
+      alert('金額、カテゴリー、日付を入力してください。');
       return;
     }
 
@@ -20,16 +20,31 @@ const Kakeibo = () => {
       date,
     };
 
-    setKakeibo([...kakeibo, newKakeibo]);
-    setAmount('');
-    setCategory('');
-    setDate('');
-  };
+    try {
+      // APIにデータをPOST
+      const response = await fetch('https://', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newKakeibo),
+      });
 
-  const handleDeleteExpense = (index) => {
-    const updatedKakeibo = [...kakeibo];
-    updatedKakeibo.splice(index, 1);
-    setKakeibo(updatedKakeibo);
+      if (response.ok) {
+        // 登録成功時の処理
+        const result = await response.json();
+        setKakeibo([...kakeibo, result]);
+        setAmount('');
+        setCategory('');
+        setDate('');
+      } else {
+        // 登録失敗時の処理
+        alert('登録に失敗しました。');
+      }
+    } catch (error) {
+      console.log(error, 'error')
+      alert('エラーが発生しました。');
+    }
   };
 
   return (
@@ -43,8 +58,14 @@ const Kakeibo = () => {
       </div>
       <div>
         <label>
-          カテゴリー:
-          <input type="text" value={category} onChange={(e) => setCategory(e.target.value)} />
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+            <option value="">選択してください</option>
+            {categories.map((cat, index) => (
+              <option key={index} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
         </label>
       </div>
       <div>
@@ -53,17 +74,16 @@ const Kakeibo = () => {
           <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </label>
       </div>
-      <div className="center">
-        <button onClick={handleAddKakeibo}>登録</button>
+      <div className='center'>
+      <button onClick={handleAddKakeibo}>登録</button>
       </div>
 
       <ul>
-        {kakeibo.map((expense, index) => (
+        {kakeibo.map((entry, index) => (
           <li key={index}>
-            <span>{`金額: ${expense.amount}, `}</span>
-            <span>{`カテゴリー: ${expense.category}, `}</span>
-            <span>{`日付: ${expense.date}`}</span>
-            <button onClick={() => handleDeleteExpense(index)}>削除</button>
+            <span>{`金額: ${entry.amount}, `}</span>
+            <span>{`カテゴリー: ${entry.category}, `}</span>
+            <span>{`日付: ${entry.date}`}</span>
           </li>
         ))}
       </ul>
