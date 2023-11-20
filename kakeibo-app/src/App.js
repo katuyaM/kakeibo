@@ -11,10 +11,10 @@ const Kakeibo = () => {
   const categories = ['食費','交通費','娯楽','その他'];
 
   const handleAddKakeibo = async () => {
-    if (!amount || !category || !date) {
-      alert('金額、カテゴリー、日付を入力してください。');
-      return;
-    }
+  //   if (!amount || !category || !date) {
+  //     alert('金額、カテゴリー、日付を入力してください。');
+  //     return;
+  //   } 入力されていなかった場合にエラーを出したかった（バリデーション）が時間ないからしてない。
 
     const newKakeibo = {
       amount,
@@ -23,7 +23,7 @@ const Kakeibo = () => {
     };
 
     try {
-      // APIにデータをPOST
+      // APIのURLを入れる
       const response = await fetch('https://', {
         method: 'POST',
         headers: {
@@ -33,14 +33,12 @@ const Kakeibo = () => {
       });
 
       if (response.ok) {
-        // 登録成功時の処理
         const result = await response.json();
         setKakeibo([...kakeibo, result]);
         setAmount('');
         setCategory('');
         setDate('');
       } else {
-        // 登録失敗時の処理
         alert('登録に失敗しました。');
       }
     } catch (error) {
