@@ -47,6 +47,39 @@ const Kakeibo = () => {
     }
   };
 
+  //表示
+  const getKakeibo = async () => {
+    try {
+      const response = await fetch('https://');
+      const data = await response.json();
+      setKakeibo(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //削除
+  const deleteKakeibo = async (id) => {
+    try {
+      const res = await fetch(`https://kakeibo/${id}`, {//例
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        getKakeibo();
+      } else {
+        alert('削除に失敗しました。');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  //ページの読み込みをさせることで更新（レンダリングで調べると出てくる）
+  useEffect(() => {
+    getKakeibo();
+  }, [kakeibo]);
+
   return (
     <div>
       <h1>家計簿</h1>
@@ -85,6 +118,7 @@ const Kakeibo = () => {
             <span>{`金額: ${entry.amount}, `}</span>
             <span>{`カテゴリー: ${entry.category}, `}</span>
             <span>{`日付: ${entry.date}`}</span>
+            <button onClick={() => deleteKakeibo(entry.id)}>削除</button>
           </li>
         ))}
       </ul>
